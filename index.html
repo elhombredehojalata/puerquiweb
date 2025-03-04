@@ -12,18 +12,22 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* Page styling */
+    /* Page styling with repeated background image */
     body {
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background-color: #ffe6e6;
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 0;
-      padding: 0;
+      
+      /* Mosaic background with cerdo.jpg */
+      background-image: url('cerdo.jpg');
+      background-repeat: repeat;
+      background-size: 150px 150px; /* Adjust to taste */
     }
 
     /* Fade-in animation for heading */
@@ -57,7 +61,7 @@
       transition: transform 1s;
     }
 
-    /* Tapa (top flap) with heart text "Ábreme" */
+    /* Tapa (top flap) with heart text “Ábreme” */
     .tapa {
       position: absolute;
       width: 100%;
@@ -141,9 +145,8 @@
   
   <script>
     /*
-      We do a JavaScript-based typewriter to handle any text length or multiline text.
-      We'll show a quick example. You can change 'fullText' to anything you want.
-      If you want even more lines, just add \\n inside the string, or store the text in a variable.
+      If you want to change the text or add more lines, edit 'fullText' below.
+      Use '\\n' for new lines or store your text in a variable, e.g. from a server.
     */
     const fullText = `Eres lo mejor que me ha pasado. 
 Te amo ❤️ 
@@ -198,15 +201,4 @@ Aquí puedes escribir un texto más largo y no se truncará.`;
 
     /*
       TEST CASES:
-      1) Page loads -> 'Te hice esto con mucho amor ❤️' fades in. 
-         The code attempts to play music after 1 second. 
-         If blocked, user must click the page/carta to allow music.
-      2) User clicks on the envelope -> Tapa rotates, papel slides up, 
-         the typewriter effect types out the entire 'fullText' (including new lines).
-      3) Confetti is launched once the carta is opened.
-      4) The entire text is displayed across multiple lines (no truncation).
-      5) If user changes 'fullText' to an even longer text, it should still type out fully.
-    */
-  </script>
-</body>
-</html>
+      1) Page loads -> 'Te hice esto con mucho amo
