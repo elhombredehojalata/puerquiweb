@@ -3,49 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti 💖</title>
+    <title>Para Ti ❤️</title>
     <style>
         body {
             background-color: #ffdde1;
             text-align: center;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
-        .card {
+
+        .carta {
+            position: relative;
             background: white;
             padding: 20px;
+            width: 300px;
+            height: 200px;
             border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-            display: inline-block;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
         }
-        #mensaje {
-            display: none;
+
+        .carta.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .boton {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
             margin-top: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .boton:hover {
+            background-color: #d63384;
         }
     </style>
 </head>
 <body>
 
-    <h1>💖 Una sorpresa para ti 💖</h1>
-
-    <div class="card">
-        <p>Haz clic en cualquier parte para ver tu mensaje.</p>
+    <h1>Te hice esto con mucho amor ❤️</h1>
+    
+    <div class="carta" id="carta">
+        Querida, eres lo mejor que me ha pasado. 💕
     </div>
 
-    <div id="mensaje" class="card">
-        <h2>Te quiero mucho 😘</h2>
-        <p>Eres lo mejor que me ha pasado, y quería hacerte algo especial.</p>
-        <img src="imagen-romantica.jpg" alt="Te quiero" width="200">
-    </div>
+    <button class="boton" onclick="mostrarCarta()">Abrir carta</button>
 
     <audio id="musica" src="tu-cancion.mp3"></audio>
 
     <script>
-        document.body.addEventListener("click", function() {
-            document.getElementById("mensaje").style.display = "block";
+        function mostrarCarta() {
+            document.getElementById("carta").classList.add("visible");
+
             var audio = document.getElementById("musica");
-            audio.play(); // Reproduce la música al hacer clic
-        });
+            if (audio.paused) {
+                audio.play().catch(error => console.log("Autoplay bloqueado: ", error));
+            }
+        }
+
+        // Reproducir música al primer clic en cualquier parte de la página
+        window.addEventListener("click", function() {
+            var audio = document.getElementById("musica");
+            if (audio.paused) {
+                audio.play().catch(error => console.log("Autoplay bloqueado: ", error));
+            }
+        }, { once: true });
     </script>
 
 </body>
