@@ -136,13 +136,13 @@
       text-align: left;
     }
 
-    /* Firma con contorno para destacar */
+    /* Firma: color blanco con contorno negro */
     #signature {
       margin-top: 20px;
       font-size: 1.5rem;
       font-family: 'Brush Script MT', cursive;
-      color: #ff4d6d;
-      text-shadow: 2px 2px 4px #000;
+      color: #fff;
+      text-shadow: 2px 2px 4px black;
       opacity: 0;
       animation: fadeSignature 2s forwards 2s;
     }
@@ -151,7 +151,7 @@
       to   { opacity: 1; }
     }
 
-    /* Efecto parpadeante para "Te amo." final */
+    /* Efecto parpadeante para "Te amo." */
     .blinking {
       color: red;
       animation: blinkingText 1s infinite;
@@ -161,6 +161,13 @@
       0% { opacity: 1; }
       50% { opacity: 0; }
       100% { opacity: 1; }
+    }
+    /* Estilo para la aclaración */
+    .clarification {
+      font-size: 0.8rem;
+      color: #fff;
+      font-style: italic;
+      margin-left: 5px;
     }
   </style>
 </head>
@@ -202,7 +209,7 @@
       }, 1000);
     });
 
-    // Función para abrir la carta (solo se ejecuta una vez)
+    // Función para abrir la carta (se ejecuta solo una vez)
     window.abrirCarta = function abrirCarta() {
       let carta = document.querySelector('.carta-container');
       if (carta.classList.contains('abierta')) return; // Evita reabrir
@@ -226,17 +233,21 @@
       });
     }
 
-    // Efecto máquina de escribir que soporta texto multilínea
+    // Efecto de máquina de escribir (más lento) con auto-scroll,
+    // pero sin forzar el scroll al terminar, para permitir la lectura manual.
     function typeWriter(element, text, i = 0) {
-      const typingSpeed = 40;
+      const typingSpeed = 80; // Aumentado para que sea más lento
       if (i < text.length) {
         element.textContent += text.charAt(i);
+        // Auto-scroll para ver la parte más reciente mientras se escribe
+        element.parentElement.scrollTop = element.parentElement.scrollHeight;
         i++;
         setTimeout(() => typeWriter(element, text, i), typingSpeed);
       } else {
-        // Al finalizar, reemplaza el último "Te amo." por una versión parpadeante
+        // Al finalizar, reemplaza el último "Te amo." por una versión parpadeante y añade aclaración.
         let content = element.textContent;
-        element.innerHTML = content.replace(/Te amo\.$/, '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span>');
+        element.innerHTML = content.replace(/Te amo\.$/, '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span><span class="clarification">(haz click en "Te amo")</span>');
+        // No forzamos auto-scroll final para permitir al usuario desplazarse manualmente.
       }
     }
   </script>
