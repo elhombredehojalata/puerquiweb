@@ -29,7 +29,7 @@
       background-size: 150px 150px;
     }
 
-    /* Encabezado: centrado, un poco más abajo, con contorno y animación */
+    /* Encabezado: centrado, con contorno, animación y posicionado un poco abajo */
     h1 {
       position: relative; 
       margin: 30px 0 10px 0; 
@@ -162,12 +162,70 @@
       50% { opacity: 0; }
       100% { opacity: 1; }
     }
-    /* Estilo para la aclaración */
+    /* Aclaración para "Te amo" */
     .clarification {
       font-size: 0.8rem;
       color: #fff;
       font-style: italic;
       margin-left: 5px;
+    }
+
+    /* Texto final adicional en la carta */
+    .postscript {
+      font-style: italic;
+      margin-top: 10px;
+      color: #333;
+    }
+
+    /* Estilos para la galería */
+    #gallery-box {
+      margin-top: 30px;
+      padding: 15px;
+      width: 320px;
+      background-color: #fdf1e3;
+      border: 2px solid #ff4d6d;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #gallery-box:hover {
+      background-color: #ffeccf;
+    }
+    #gallery-box p {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #333;
+    }
+    /* Contenedor de la galería (inicialmente oculto) */
+    #gallery-container {
+      display: none;
+      margin-top: 20px;
+      width: 320px;
+    }
+    #gallery-main {
+      width: 100%;
+      height: auto;
+      text-align: center;
+    }
+    #gallery-main img {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      transition: all 1s ease;
+    }
+    #gallery-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+      justify-content: center;
+    }
+    #gallery-thumbs img {
+      width: 80px;
+      height: auto;
+      opacity: 0.8;
+      transition: all 0.5s ease;
     }
   </style>
 </head>
@@ -196,13 +254,30 @@
   <!-- Audio -->
   <audio id="musica" src="brillas.mp3" loop></audio>
 
+  <!-- Galería: Caja inicial -->
+  <div id="gallery-box" onclick="openGallery()">
+    <p>Click aquí para revivir algunos recuerdos de estos hermosos 4 años que me regalaste.</p>
+  </div>
+
+  <!-- Galería: Contenedor oculto -->
+  <div id="gallery-container">
+    <div id="gallery-main"></div>
+    <div id="gallery-thumbs"></div>
+  </div>
+
   <script>
     // Texto completo de la carta; usa "\n\n" para separar párrafos.
     const fullText = `Cuatro años en los que hemos perfeccionado el arte de querernos sin volvernos completamente locos (aunque a veces rozamos la frontera). Dicen que el tiempo vuela cuando se disfruta, pero yo creo que el tiempo simplemente se rinde ante nosotros, porque lo hemos estirado, exprimido y convertido en historias que solo nosotros entendemos.\n\nSiempre he escrito cuentos, hilando palabras para inventar vidas ajenas, tejiendo tramas con personajes que existen solo en el papel. Pero contigo, por primera vez, no necesito ficciones. Lo nuestro se escribe solo, sin esfuerzo, con escenas que no necesitan tinta para quedarse grabadas. No hay finales predecibles ni desenlaces cerrados, solo la certeza de que siempre habrá una página más.\n\nSi nuestro amor fuera un libro, tendría capítulos caóticos, diálogos afilados y giros inesperados… pero seguiría siendo mi favorito. Gracias por cada página, por cada línea y por no tacharme de tu historia. Te amo.`;
-
+    
     let typewriterStarted = false;
+    let userScrolled = false; // Flag para detectar desplazamiento manual
 
+    // Listener para detectar scroll manual en el contenedor de la carta
     document.addEventListener('DOMContentLoaded', function() {
+      const papel = document.querySelector('.papel');
+      papel.addEventListener('scroll', function() {
+        userScrolled = true;
+      });
       let audio = document.getElementById('musica');
       setTimeout(() => {
         audio.play().catch(error => console.log('Autoplay bloqueado, usuario debe interactuar primero.'));
@@ -233,22 +308,58 @@
       });
     }
 
-    // Efecto de máquina de escribir (más lento) con auto-scroll,
-    // pero sin forzar el scroll al terminar, para permitir la lectura manual.
+    // Efecto de máquina de escribir (más lento) con auto-scroll, que se detiene si el usuario desplaza manualmente.
     function typeWriter(element, text, i = 0) {
-      const typingSpeed = 80; // Aumentado para que sea más lento
+      const typingSpeed = 80;
       if (i < text.length) {
         element.textContent += text.charAt(i);
-        // Auto-scroll para ver la parte más reciente mientras se escribe
-        element.parentElement.scrollTop = element.parentElement.scrollHeight;
+        if (!userScrolled) {
+          element.parentElement.scrollTop = element.parentElement.scrollHeight;
+        }
         i++;
         setTimeout(() => typeWriter(element, text, i), typingSpeed);
       } else {
-        // Al finalizar, reemplaza el último "Te amo." por una versión parpadeante y añade aclaración.
+        // Al finalizar, se reemplaza el último "Te amo." por una versión parpadeante, se añade la aclaración,
+        // y en una línea aparte se agrega "Postada: Haz click en el 'Te amo'".
         let content = element.textContent;
-        element.innerHTML = content.replace(/Te amo\.$/, '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span><span class="clarification">(haz click en "Te amo")</span>');
-        // No forzamos auto-scroll final para permitir al usuario desplazarse manualmente.
+        element.innerHTML = content.replace(/Te amo\.$/, 
+          '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span><span class="clarification">(haz click en \'Te amo\')</span><br><em>Postada: Haz click en el "Te amo"</em>');
       }
+    }
+
+    // Función para abrir la galería
+    function openGallery() {
+      document.getElementById('gallery-box').style.display = 'none';
+      document.getElementById('gallery-container').style.display = 'block';
+      startGallery();
+    }
+
+    // Variables para la galería
+    let currentImage = 1;
+    const totalImages = 24; // 24 imágenes
+
+    // Inicia la galería: muestra cada imagen en el área principal y luego la minimiza a miniatura.
+    function startGallery() {
+      if (currentImage > totalImages) return;
+      const galleryMain = document.getElementById('gallery-main');
+      galleryMain.innerHTML = ''; // Limpia el área principal
+      let img = document.createElement('img');
+      img.src = currentImage + ".jpg";
+      img.style.width = "100%";
+      img.style.maxWidth = "320px";
+      img.style.height = "auto";
+      galleryMain.appendChild(img);
+      // Después de 3 segundos, se minimiza la imagen y se mueve a la franja de miniaturas.
+      setTimeout(() => {
+        img.style.width = "80px"; // Se reduce a tamaño de miniatura
+        img.style.opacity = "0.8";
+        setTimeout(() => {
+          const galleryThumbs = document.getElementById('gallery-thumbs');
+          galleryThumbs.appendChild(img);
+          currentImage++;
+          startGallery();
+        }, 1000);
+      }, 3000);
     }
   </script>
 </body>
