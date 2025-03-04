@@ -23,7 +23,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       background: 
-        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+        linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
         url('cerdito.jpg');
       background-repeat: repeat;
       background-size: 150px 150px;
@@ -52,8 +52,8 @@
       animation: bounce 1s infinite;
     }
     @keyframes bounce {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-8px); }
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
       100% { transform: translateY(0); }
     }
 
@@ -274,7 +274,7 @@
       padding: 15px;
       cursor: pointer;
       transition: background-color 0.3s;
-      display: none; /* Se mostrará tras copiar enlace */
+      display: none; /* Aparece después de copiar el enlace */
     }
     #final-box:hover {
       background-color: #b2ebf2;
@@ -311,6 +311,24 @@
     }
     #final-button:hover {
       background-color: #004d40;
+    }
+
+    /* ======= Resaltado para cajitas ======= */
+    .highlight-info {
+      animation: pulseHighlightInfo 1s infinite;
+    }
+    @keyframes pulseHighlightInfo {
+      0% { box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+      50% { box-shadow: 0 0 20px rgba(0,123,255,1); }
+      100% { box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+    }
+    .highlight-final {
+      animation: pulseHighlightFinal 1s infinite;
+    }
+    @keyframes pulseHighlightFinal {
+      0% { box-shadow: 0 0 10px rgba(0,150,0,0.5); }
+      50% { box-shadow: 0 0 20px rgba(0,150,0,1); }
+      100% { box-shadow: 0 0 10px rgba(0,150,0,0.5); }
     }
   </style>
 </head>
@@ -363,7 +381,7 @@
     <p>POSTADA 2</p>
   </div>
   <div id="final-content">
-    <p>¿NO TE GUSTÓ LA MÚSICA DE FONDO? <span style="font-size:1.2rem;">😢💔</span>... ENTONCES AQUÍ TIENES A MALA RABIA <span style="font-size:1.2rem;">😊</span></p>
+    <p>¿NO TE GUSTÓ LA MÚSICA DE FONDO? <span style="font-size:1.2rem;">😢💔</span> ... ENTONCES AQUÍ TIENES A MALA RABIA <span style="font-size:1.2rem;">😊</span></p>
     <button id="final-button" onclick="changeMusic(event)">SÍ, QUIERO MALA RABIA</button>
   </div>
 
@@ -374,7 +392,6 @@
     let cartaAbierta = false;
     let typewriterDone = false;
 
-    // Reproduce la música tras 1s
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => {
         const audio = document.getElementById('musica');
@@ -411,7 +428,7 @@
       });
     }
 
-    // Máquina de escribir (sin auto-scroll ya que la caja crece)
+    // Máquina de escribir (la caja crece automáticamente al agregar texto)
     function typeWriter(element, text, i = 0) {
       const typingSpeed = 80;
       if (i < text.length) {
@@ -428,7 +445,7 @@
       }
     }
 
-    // Abre la galería (verifica si la carta está abierta)
+    // Galería de fotos
     let currentImage = 1;
     const totalImages = 24;
     function openGallery() {
@@ -441,7 +458,12 @@
       startGallery();
     }
     function startGallery() {
-      if (currentImage > totalImages) return;
+      if (currentImage > totalImages) {
+        // Una vez terminadas todas las imágenes, auto-scroll al botón "Te cuento que..."
+        document.getElementById('info-box').scrollIntoView({behavior: 'smooth'});
+        document.getElementById('info-box').classList.add('highlight-info');
+        return;
+      }
       const galleryMain = document.getElementById('gallery-main');
       galleryMain.innerHTML = '';
       let img = document.createElement('img');
@@ -458,7 +480,7 @@
       }, 3000);
     }
 
-    // Abre la cajita "Te cuento que..."
+    // Abre cajita "Te cuento que..."
     function openInfo() {
       if (!cartaAbierta) {
         alert('Tranquila, puerquita, primero lee la carta y después ves esto 🤣❤️');
@@ -467,6 +489,9 @@
       const infoContainer = document.getElementById('info-container');
       if (infoContainer.style.display === 'block') return;
       infoContainer.style.display = 'block';
+      // Auto-scroll a info-container
+      infoContainer.scrollIntoView({behavior: 'smooth'});
+      document.getElementById('info-box').classList.add('highlight-info');
     }
 
     // Copiar enlace y mostrar mensaje; luego muestra la cajita final
@@ -476,8 +501,11 @@
         .then(() => {
           document.getElementById('info-message').textContent =
             'Gracias por guardar nuestros puerquirecuerdos, te amo 🐷❤️';
-          // Muestra la cajita final después de copiar el enlace
-          document.getElementById('final-box').style.display = 'block';
+          // Muestra la cajita final
+          const finalBox = document.getElementById('final-box');
+          finalBox.style.display = 'block';
+          finalBox.scrollIntoView({behavior: 'smooth'});
+          finalBox.classList.add('highlight-final');
         })
         .catch(err => console.log('Error al copiar enlace:', err));
     }
@@ -485,7 +513,6 @@
     // Abre la cajita final ("POSTADA 2")
     function openFinalBox() {
       const finalContent = document.getElementById('final-content');
-      // Alterna la visibilidad
       if (finalContent.style.display === 'block') {
         finalContent.style.display = 'none';
       } else {
@@ -493,7 +520,7 @@
       }
     }
 
-    // Cambia la música de fondo
+    // Cambia la música de fondo a bajan.mp3
     function changeMusic(event) {
       event.stopPropagation();
       const audio = document.getElementById('musica');
@@ -502,5 +529,34 @@
       audio.play().catch(err => console.log('Error al reproducir nueva música:', err));
     }
   </script>
+
+  <!-- ======= Cajita FINAL: POSTADA 2 ======= -->
+  <div id="final-box" onclick="openFinalBox()">
+    <p>POSTADA 2</p>
+  </div>
+  <div id="final-content">
+    <p>¿NO TE GUSTÓ LA MÚSICA DE FONDO? <span style="font-size:1.2rem;">😢💔</span> ... ENTONCES AQUÍ TIENES A MALA RABIA <span style="font-size:1.2rem;">😊</span></p>
+    <button id="final-button" onclick="changeMusic(event)">SÍ, QUIERO MALA RABIA</button>
+  </div>
+
+  <style>
+    /* Resaltado para cajitas info y final */
+    .highlight-info {
+      animation: pulseHighlightInfo 1s infinite;
+    }
+    @keyframes pulseHighlightInfo {
+      0% { box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+      50% { box-shadow: 0 0 20px rgba(0,123,255,1); }
+      100% { box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+    }
+    .highlight-final {
+      animation: pulseHighlightFinal 1s infinite;
+    }
+    @keyframes pulseHighlightFinal {
+      0% { box-shadow: 0 0 10px rgba(0,150,0,0.5); }
+      50% { box-shadow: 0 0 20px rgba(0,150,0,1); }
+      100% { box-shadow: 0 0 10px rgba(0,150,0,0.5); }
+    }
+  </style>
 </body>
 </html>
