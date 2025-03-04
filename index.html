@@ -28,18 +28,21 @@
       background-size: 150px 150px;
     }
 
-    /* Encabezado posicionado más arriba con animación */
+    /* Encabezado fijo para que siempre se vea */
     h1 {
-      position: relative;
-      z-index: 10;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
       font-size: 2rem;
-      margin: 10px 0 30px 0;
+      margin: 0;
       opacity: 0;
       animation: fadeIn 2s forwards, pulse 2s infinite;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes pulse {
       0% { transform: scale(1); }
@@ -57,13 +60,14 @@
       100% { transform: translateY(0); }
     }
 
-    /* Carta container con perspectiva 3D */
+    /* Carta container con margen superior para dejar espacio al encabezado */
     .carta-container {
       position: relative;
       width: 320px;
       height: 200px;
       cursor: pointer;
       perspective: 1000px;
+      margin-top: 80px; /* Para no solaparse con el encabezado fijo */
     }
 
     /* Sobre (cuerpo del sobre) */
@@ -118,7 +122,7 @@
       opacity: 0;
       overflow-y: auto;
     }
-    /* Al abrir la carta */
+    /* Cuando se abre la carta */
     .carta-container.abierta .tapa {
       transform: rotateX(180deg);
     }
@@ -127,15 +131,25 @@
       opacity: 1;
     }
 
-    /* Área para el texto con efecto máquina de escribir (se rellenará vía JS) */
+    /* Área para el texto con efecto máquina de escribir */
     #typewriter {
       white-space: pre-wrap;
       margin: 0;
     }
+
+    /* Firma con estilo bonito */
+    #signature {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      font-family: 'Brush Script MT', cursive;
+      color: #ff4d6d;
+      opacity: 0;
+      animation: fadeIn 2s forwards 2s;
+    }
   </style>
 </head>
 <body>
-  <!-- Encabezado superior -->
+  <!-- Encabezado fijo -->
   <h1>Te hice esto con mucho amor <span class="heart">❤️</span></h1>
 
   <!-- Contenedor de la carta -->
@@ -151,15 +165,17 @@
       <p id="typewriter"></p>
     </div>
   </div>
-  
+
+  <!-- Firma debajo de la carta -->
+  <div id="signature">firma: tuhombrede_hojalata</div>
+
   <!-- Audio de fondo -->
   <audio id="musica" src="brillas.mp3" loop></audio>
   
   <script>
-    // Texto completo a mostrar (puedes modificarlo por uno más largo)
     const fullText = `Eres lo mejor que me ha pasado.\nTe amo ❤️\nAquí puedes escribir un texto más largo y no se truncará.`;
+    let typewriterStarted = false;
 
-    // Se intenta reproducir la música después de cargar la página
     document.addEventListener('DOMContentLoaded', function() {
       let audio = document.getElementById('musica');
       setTimeout(() => {
@@ -167,10 +183,9 @@
       }, 1000);
     });
 
-    // La función se ejecuta solo una vez al hacer click (si la carta no está ya abierta)
     window.abrirCarta = function abrirCarta() {
       let carta = document.querySelector('.carta-container');
-      if (carta.classList.contains('abierta')) return; // Evita regenerar el texto
+      if (carta.classList.contains('abierta')) return; // Evitar regenerar el texto
       carta.classList.add('abierta');
 
       let audio = document.getElementById('musica');
@@ -178,13 +193,14 @@
 
       lanzarConfeti();
 
-      // Inicia el efecto de máquina de escribir una sola vez
-      setTimeout(() => {
-        typeWriter(document.getElementById('typewriter'), fullText);
-      }, 500);
+      if (!typewriterStarted) {
+        setTimeout(() => {
+          typeWriter(document.getElementById('typewriter'), fullText);
+          typewriterStarted = true;
+        }, 500);
+      }
     };
 
-    // Confetti con canvas-confetti
     function lanzarConfeti() {
       confetti({
         particleCount: 100,
@@ -193,23 +209,14 @@
       });
     }
 
-    // Efecto máquina de escribir para texto multilínea
     function typeWriter(element, text, i = 0) {
-      const typingSpeed = 40; // velocidad en ms por caracter
+      const typingSpeed = 40;
       if (i < text.length) {
         element.textContent += text.charAt(i);
         i++;
         setTimeout(() => typeWriter(element, text, i), typingSpeed);
       }
     }
-
-    /* TEST CASES:
-       1) Al cargar la página, se muestra el encabezado animado en la parte superior.
-       2) El fondo muestra la imagen "cerdito.jpg" en mosaico con overlay oscuro.
-       3) Al hacer click en la carta (solo la primera vez), la solapa rota, el papel se desliza y aparece el texto completo con efecto de máquina de escribir.
-       4) Se lanza confetti al abrir la carta.
-       5) Si se hace click nuevamente, no se vuelve a generar el texto.
-    */
   </script>
 </body>
 </html>
