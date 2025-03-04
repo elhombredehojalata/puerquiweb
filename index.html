@@ -43,8 +43,8 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
     .heart {
@@ -52,8 +52,8 @@
       animation: bounce 1s infinite;
     }
     @keyframes bounce {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-8px); }
       100% { transform: translateY(0); }
     }
 
@@ -274,7 +274,7 @@
       padding: 15px;
       cursor: pointer;
       transition: background-color 0.3s;
-      display: none; /* Aparece después de copiar el enlace */
+      display: none;
     }
     #final-box:hover {
       background-color: #b2ebf2;
@@ -337,7 +337,7 @@
   <!-- Título -->
   <h1>¡FELICES 4 AÑOS, CERDA MÍA! <span class="heart">🐷❤️</span></h1>
 
-  <!-- Carta -->
+  <!-- Contenedor de la Carta -->
   <div class="carta-container" onclick="abrirCarta()">
     <div class="sobre">
       <div class="tapa">
@@ -428,7 +428,7 @@
       });
     }
 
-    // Máquina de escribir (la caja crece automáticamente al agregar texto)
+    // Máquina de escribir (la caja crece automáticamente sin scroll interno)
     function typeWriter(element, text, i = 0) {
       const typingSpeed = 80;
       if (i < text.length) {
@@ -459,8 +459,8 @@
     }
     function startGallery() {
       if (currentImage > totalImages) {
-        // Una vez terminadas todas las imágenes, auto-scroll al botón "Te cuento que..."
-        document.getElementById('info-box').scrollIntoView({behavior: 'smooth'});
+        // Al terminar, auto-scroll y resalta la cajita "Te cuento que..."
+        document.getElementById('info-box').scrollIntoView({ behavior: 'smooth' });
         document.getElementById('info-box').classList.add('highlight-info');
         return;
       }
@@ -480,7 +480,7 @@
       }, 3000);
     }
 
-    // Abre cajita "Te cuento que..."
+    // Cajita "Te cuento que..."
     function openInfo() {
       if (!cartaAbierta) {
         alert('Tranquila, puerquita, primero lee la carta y después ves esto 🤣❤️');
@@ -489,34 +489,33 @@
       const infoContainer = document.getElementById('info-container');
       if (infoContainer.style.display === 'block') return;
       infoContainer.style.display = 'block';
-      // Auto-scroll a info-container
-      infoContainer.scrollIntoView({behavior: 'smooth'});
+      infoContainer.scrollIntoView({ behavior: 'smooth' });
       document.getElementById('info-box').classList.add('highlight-info');
     }
 
-    // Copiar enlace y mostrar mensaje; luego muestra la cajita final
+    // Copia enlace y muestra mensaje; luego muestra la cajita final
     function copyLink(event) {
       event.stopPropagation();
       navigator.clipboard.writeText('https://elhombredehojalata.github.io/puerquiweb')
         .then(() => {
           document.getElementById('info-message').textContent =
             'Gracias por guardar nuestros puerquirecuerdos, te amo 🐷❤️';
-          // Muestra la cajita final
           const finalBox = document.getElementById('final-box');
           finalBox.style.display = 'block';
-          finalBox.scrollIntoView({behavior: 'smooth'});
+          finalBox.scrollIntoView({ behavior: 'smooth' });
           finalBox.classList.add('highlight-final');
         })
         .catch(err => console.log('Error al copiar enlace:', err));
     }
 
-    // Abre la cajita final ("POSTADA 2")
+    // Cajita FINAL: POSTADA 2
     function openFinalBox() {
       const finalContent = document.getElementById('final-content');
       if (finalContent.style.display === 'block') {
         finalContent.style.display = 'none';
       } else {
         finalContent.style.display = 'block';
+        finalContent.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
@@ -530,7 +529,7 @@
     }
   </script>
 
-  <!-- ======= Cajita FINAL: POSTADA 2 ======= -->
+  <!-- Cajita FINAL: POSTADA 2 -->
   <div id="final-box" onclick="openFinalBox()">
     <p>POSTADA 2</p>
   </div>
