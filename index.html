@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* Fondo con imagen mosaico + overlay semitransparente */
+    /* ======== Estilos Generales ======== */
     body {
       margin: 0;
       padding: 0;
@@ -22,6 +22,8 @@
       min-height: 100vh;
       font-family: Arial, sans-serif;
       text-align: center;
+
+      /* Fondo con mosaico + overlay */
       background: 
         linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
         url('cerdito.jpg');
@@ -29,7 +31,7 @@
       background-size: 150px 150px;
     }
 
-    /* Encabezado: centrado, con contorno, animación y posicionado un poco abajo */
+    /* ======== Encabezado principal ======== */
     h1 {
       position: relative; 
       margin: 30px 0 10px 0; 
@@ -48,7 +50,6 @@
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
-    /* Animación para el emoji corazón (rebote) */
     .heart {
       display: inline-block;
       animation: bounce 1s infinite;
@@ -59,7 +60,7 @@
       100% { transform: translateY(0); }
     }
 
-    /* Contenedor de la carta (sobre) */
+    /* ======== Carta (Sobre + Papel) ======== */
     .carta-container {
       position: relative;
       width: 320px;
@@ -67,9 +68,8 @@
       margin-top: 20px;
       cursor: pointer;
       perspective: 1000px;
+      overflow: hidden; /* Evita que se vea el papel antes de abrir */
     }
-
-    /* Sobre (cuerpo del sobre) */
     .sobre {
       position: absolute;
       width: 100%;
@@ -77,9 +77,8 @@
       background-color: #fdf1e3;
       border-radius: 10px;
       transition: transform 1s;
+      z-index: 2; /* Sobre arriba del papel inicialmente */
     }
-
-    /* Tapa del sobre con texto “Ábreme” */
     .tapa {
       position: absolute;
       width: 100%;
@@ -103,7 +102,6 @@
       gap: 0.3rem;
     }
 
-    /* Papel (contenido de la carta) */
     .papel {
       position: absolute;
       width: 90%;
@@ -115,26 +113,28 @@
       padding: 10px;
       transform: translateY(100%);
       transition: transform 1s 0.5s, opacity 1s 0.5s;
-      /* Cambiado para que el contenido se alinee al inicio */
       display: block;
       overflow-y: auto;
       text-align: left;
+      z-index: 1; /* Papel debajo del sobre */
+      opacity: 0; /* Oculto inicialmente */
     }
-    .carta-container.abierta .tapa {
+    .carta-container.abierta .sobre {
       transform: rotateX(180deg);
+      z-index: 0; /* Al abrir, pasa detrás del papel */
     }
     .carta-container.abierta .papel {
       transform: translateY(0);
-      opacity: 1;
+      opacity: 1; /* Se muestra cuando la carta está abierta */
     }
 
-    /* Área de texto con efecto máquina de escribir */
+    /* ======== Efecto Máquina de Escribir ======== */
     #typewriter {
       white-space: pre-wrap;
       margin: 0;
     }
 
-    /* Firma: color blanco con contorno negro */
+    /* ======== Firma ======== */
     #signature {
       margin-top: 20px;
       font-size: 1.5rem;
@@ -149,7 +149,7 @@
       to   { opacity: 1; }
     }
 
-    /* Efecto parpadeante para "Te amo." */
+    /* ======== Efecto parpadeante para "Te amo." ======== */
     .blinking {
       color: red;
       animation: blinkingText 1s infinite;
@@ -160,7 +160,6 @@
       50% { opacity: 0; }
       100% { opacity: 1; }
     }
-    /* Aclaración para "Te amo" */
     .clarification {
       font-size: 0.8rem;
       color: #fff;
@@ -168,14 +167,7 @@
       margin-left: 5px;
     }
 
-    /* Texto final adicional en la carta */
-    .postscript {
-      font-style: italic;
-      margin-top: 10px;
-      color: #333;
-    }
-
-    /* Estilos para la galería */
+    /* ======== Galería de Fotos ======== */
     #gallery-box {
       margin-top: 30px;
       padding: 15px;
@@ -195,7 +187,6 @@
       font-weight: bold;
       color: #333;
     }
-    /* Contenedor de la galería (inicialmente oculto) */
     #gallery-container {
       display: none;
       margin-top: 20px;
@@ -226,7 +217,7 @@
       transition: all 0.5s ease;
     }
 
-    /* Nueva cajita: “Te cuento que…” */
+    /* ======== Cajita “Te cuento que…” ======== */
     #info-box {
       margin-top: 20px;
       width: 320px;
@@ -246,7 +237,6 @@
       font-weight: bold;
       color: #333;
     }
-    /* Contenedor oculto para el texto de “Te cuento que…” */
     #info-container {
       display: none;
       margin-top: 10px;
@@ -279,7 +269,6 @@
     #info-button:hover {
       background-color: #ff2f51;
     }
-    /* Mensaje al copiar link */
     #info-message {
       margin-top: 10px;
       color: #ff4d6d;
@@ -298,14 +287,11 @@
   <!-- Encabezado -->
   <h1>¡FELICES 4 AÑOS, CERDA MÍA! <span class="heart">🐷❤️</span></h1>
 
-  <!-- Carta -->
+  <!-- Carta (Contenedor + Sobre + Tapa + Papel) -->
   <div class="carta-container" onclick="abrirCarta()">
     <div class="sobre"></div>
     <div class="tapa">
-      <p>
-        <span>Ábreme</span>
-        <i class="fa fa-heart"></i>
-      </p>
+      <p>Ábreme <i class="fa fa-heart"></i></p>
     </div>
     <div class="papel">
       <p id="typewriter"></p>
@@ -315,25 +301,23 @@
   <!-- Firma -->
   <div id="signature">firma: tuhombrede_hojalata</div>
 
-  <!-- Audio -->
+  <!-- Audio de fondo -->
   <audio id="musica" src="brillas.mp3" loop></audio>
 
   <!-- Galería: Caja inicial -->
   <div id="gallery-box" onclick="openGallery()">
     <p>Click aquí para revivir algunos recuerdos de estos hermosos 4 años que me regalaste.</p>
   </div>
-
   <!-- Galería: Contenedor oculto -->
   <div id="gallery-container">
     <div id="gallery-main"></div>
     <div id="gallery-thumbs"></div>
   </div>
 
-  <!-- Nueva cajita “Te cuento que…” -->
+  <!-- Cajita “Te cuento que…” -->
   <div id="info-box" onclick="openInfo()">
     <p>Te cuento que...</p>
   </div>
-
   <!-- Contenedor del texto y botón para copiar enlace -->
   <div id="info-container">
     <div id="info-text">
@@ -344,18 +328,17 @@
   </div>
 
   <script>
-    // Texto completo de la carta; usa "\n\n" para separar párrafos.
+    /* ======== Texto de la Carta ======== */
     const fullText = `Cuatro años en los que hemos perfeccionado el arte de querernos sin volvernos completamente locos (aunque a veces rozamos la frontera). Dicen que el tiempo vuela cuando se disfruta, pero yo creo que el tiempo simplemente se rinde ante nosotros, porque lo hemos estirado, exprimido y convertido en historias que solo nosotros entendemos.\n\nSiempre he escrito cuentos, hilando palabras para inventar vidas ajenas, tejiendo tramas con personajes que existen solo en el papel. Pero contigo, por primera vez, no necesito ficciones. Lo nuestro se escribe solo, sin esfuerzo, con escenas que no necesitan tinta para quedarse grabadas. No hay finales predecibles ni desenlaces cerrados, solo la certeza de que siempre habrá una página más.\n\nSi nuestro amor fuera un libro, tendría capítulos caóticos, diálogos afilados y giros inesperados… pero seguiría siendo mi favorito. Gracias por cada página, por cada línea y por no tacharme de tu historia. Te amo.`;
-    
+
     let typewriterStarted = false;
-    let userScrolled = false; // Flag para detectar desplazamiento manual
-    let cartaAbierta = false; // Para saber si la carta ya fue abierta
+    let userScrolled = false;
+    let cartaAbierta = false;
 
     document.addEventListener('DOMContentLoaded', function() {
       const papel = document.querySelector('.papel');
-      // Detecta scroll manual en el contenedor de la carta
       papel.addEventListener('scroll', function() {
-        userScrolled = true;
+        userScrolled = true; // el usuario movió manualmente el scroll
       });
 
       let audio = document.getElementById('musica');
@@ -364,8 +347,8 @@
       }, 1000);
     });
 
-    // Abre la carta (solo la primera vez)
-    window.abrirCarta = function abrirCarta() {
+    /* ======== Abrir Carta ======== */
+    function abrirCarta() {
       let carta = document.querySelector('.carta-container');
       if (carta.classList.contains('abierta')) return;
       carta.classList.add('abierta');
@@ -381,9 +364,8 @@
           typewriterStarted = true;
         }, 500);
       }
-    };
+    }
 
-    // Confetti
     function lanzarConfeti() {
       confetti({
         particleCount: 100,
@@ -392,39 +374,39 @@
       });
     }
 
-    // Efecto de máquina de escribir (más lento) con auto-scroll condicional.
+    /* ======== Máquina de escribir con auto-scroll condicional ======== */
     function typeWriter(element, text, i = 0) {
       const typingSpeed = 80;
       if (i < text.length) {
         element.textContent += text.charAt(i);
-        // Auto-scroll: si el usuario no ha desplazado manualmente y está cerca del fondo, se desplaza.
+        // auto-scroll solo si el usuario NO ha scrolleado manualmente y está al final
         if (!userScrolled && isNearBottom(element.parentElement)) {
           element.parentElement.scrollTop = element.parentElement.scrollHeight;
         }
         i++;
         setTimeout(() => typeWriter(element, text, i), typingSpeed);
       } else {
-        // Al finalizar, se reemplaza "Te amo." con parpadeo, se añade la aclaración y "Postada: Haz click en el 'Te amo'".
+        // Al terminar la animación
         let content = element.textContent;
         element.innerHTML = content.replace(
           /Te amo\.$/,
           '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span>' +
-          '<span class="clarification">(haz click en \'Te amo\')</span><br><em>Postada: Haz click en el "Te amo"</em>'
+          '<span class="clarification">(haz click en \'Te amo\')</span>' +
+          '<br><em>Postada: Haz click en el \"Te amo\"</em>'
         );
-        // Una vez finalizada la animación, forzamos el scroll al inicio.
+        // Forzamos el scroll al inicio para que se pueda leer desde arriba
         element.parentElement.scrollTop = 0;
-        // Se permite el scroll manual (desactivamos el auto-scroll)
-        userScrolled = true;
+        userScrolled = true; // desactiva auto-scroll
       }
     }
 
-    // Verifica si el usuario está cerca del fondo
+    // Verifica si está cerca del fondo
     function isNearBottom(container) {
       const threshold = 10;
       return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
     }
 
-    // Abre la galería
+    /* ======== Galería de Fotos ======== */
     function openGallery() {
       if (!cartaAbierta) {
         alert("Tranquila, puerquita, primero lee la carta y después ves esto 🤣❤️");
@@ -434,12 +416,8 @@
       document.getElementById('gallery-container').style.display = 'block';
       startGallery();
     }
-
-    // Variables para la galería
     let currentImage = 1;
     const totalImages = 24;
-
-    // Inicia la galería: muestra cada imagen y luego la minimiza a miniatura.
     function startGallery() {
       if (currentImage > totalImages) return;
       const galleryMain = document.getElementById('gallery-main');
@@ -450,6 +428,7 @@
       img.style.maxWidth = "320px";
       img.style.height = "auto";
       galleryMain.appendChild(img);
+
       setTimeout(() => {
         img.style.width = "80px";
         img.style.opacity = "0.8";
@@ -462,14 +441,12 @@
       }, 3000);
     }
 
-    // Abre la cajita “Te cuento que…”
+    /* ======== “Te cuento que…” ======== */
     function openInfo() {
       const infoContainer = document.getElementById('info-container');
       if (infoContainer.style.display === 'block') return;
       infoContainer.style.display = 'block';
     }
-
-    // Copia el enlace y muestra el mensaje
     function copyLink(event) {
       event.stopPropagation();
       navigator.clipboard.writeText('https://elhombredehojalata.github.io/puerquiweb')
