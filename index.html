@@ -1,127 +1,178 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carta para Ti</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2"></script>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #ffe6e6;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeIn 2s forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .carta-container {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            cursor: pointer;
-            perspective: 1000px;
-        }
-        .sobre {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: #ff4d6d;
-            border-radius: 10px;
-            transition: transform 1s;
-        }
-        .tapa {
-            position: absolute;
-            width: 100%;
-            height: 50%;
-            background-color: #d43f5e;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            transform-origin: top;
-            transition: transform 1s;
-        }
-        .papel {
-            position: absolute;
-            width: 90%;
-            height: 80%;
-            background-color: white;
-            border-radius: 5px;
-            top: 10%;
-            left: 5%;
-            padding: 10px;
-            transform: translateY(100%);
-            transition: transform 1s 0.5s, opacity 1s 0.5s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            opacity: 0;
-        }
-        .carta-container.abierta .tapa {
-            transform: rotateX(180deg);
-        }
-        .carta-container.abierta .papel {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .texto-escribiendo {
-            overflow: hidden;
-            border-right: 3px solid black;
-            white-space: nowrap;
-            animation: escribir 3s steps(40) forwards;
-        }
-        @keyframes escribir {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carta para Ti</title>
+
+  <!-- FontAwesome (optional icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Confetti library (canvas-confetti) -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Page styling */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #ffe6e6;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+
+    /* Fade-in animation for heading */
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Carta container with 3D perspective */
+    .carta-container {
+      position: relative;
+      width: 320px; /* Slightly wider so text won't be cut */
+      height: 200px;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+
+    /* Sobre (envelope) styling */
+    .sobre {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #ff4d6d;
+      border-radius: 10px;
+      transition: transform 1s;
+    }
+
+    /* Tapa (top flap) of the envelope */
+    .tapa {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background-color: #d43f5e;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      transform-origin: top;
+      transition: transform 1s;
+    }
+
+    /* Papel (letter) inside */
+    .papel {
+      position: absolute;
+      width: 90%;
+      height: 80%;
+      background-color: white;
+      border-radius: 5px;
+      top: 10%;
+      left: 5%;
+      padding: 10px;
+      transform: translateY(100%);
+      transition: transform 1s 0.5s, opacity 1s 0.5s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      opacity: 0;
+    }
+
+    /* When the card is opened, the flap rotates and the paper slides up */
+    .carta-container.abierta .tapa {
+      transform: rotateX(180deg);
+    }
+    .carta-container.abierta .papel {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Typewriter effect */
+    .texto-escribiendo {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 3px solid black;
+      animation: escribir 4s steps(60) forwards, parpadeoCursor 0.8s infinite step-end alternate;
+    }
+    /* The steps(60) ensures we have enough steps for the full sentence. Adjust if your text is longer. */
+    @keyframes escribir {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+    /* Cursor blinking */
+    @keyframes parpadeoCursor {
+      50% { border-color: transparent; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Te hice esto con mucho amor ❤️</h1>
-    <div class="carta-container" onclick="abrirCarta()">
-        <div class="sobre"></div>
-        <div class="tapa"></div>
-        <div class="papel">
-            <p class="texto-escribiendo">Eres lo mejor que me ha pasado. Te amo ❤️</p>
-        </div>
+  <h1>Te hice esto con mucho amor ❤️</h1>
+
+  <div class="carta-container" onclick="abrirCarta()">
+    <div class="sobre"></div>
+    <div class="tapa"></div>
+    <div class="papel">
+      <p class="texto-escribiendo">Eres lo mejor que me ha pasado. Te amo ❤️</p>
     </div>
-    <audio id="musica" src="brillas.mp3" loop></audio>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let audio = document.getElementById('musica');
-            setTimeout(() => {
-                audio.play().catch(error => console.log("Autoplay bloqueado, usuario debe interactuar primero."));
-            }, 1000);
-        });
+  </div>
+  
+  <!-- Audio for background music -->
+  <audio id="musica" src="brillas.mp3" loop></audio>
+  
+  <script>
+    // Ask the user for the expected behavior if needed:
+    // e.g., Should the text appear in multiple lines or just one line?
+    // Let me know if you want multi-line typing.
 
-        function abrirCarta() {
-            let carta = document.querySelector('.carta-container');
-            carta.classList.add('abierta');
-            let audio = document.getElementById('musica');
-            audio.play();
-            lanzarConfeti();
-        }
+    // Attempt to play music after page load
+    document.addEventListener('DOMContentLoaded', function() {
+      let audio = document.getElementById('musica');
+      setTimeout(() => {
+        audio.play().catch(error => console.log('Autoplay bloqueado, usuario debe interactuar primero.'));
+      }, 1000);
+    });
 
-        function lanzarConfeti() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
-    </script>
+    // On click, open the card and play music
+    function abrirCarta() {
+      let carta = document.querySelector('.carta-container');
+      carta.classList.add('abierta');
+
+      let audio = document.getElementById('musica');
+      audio.play().catch(err => console.log('Audio blocked:', err));
+
+      // Launch confetti
+      lanzarConfeti();
+    }
+
+    // Simple confetti using canvas-confetti
+    function lanzarConfeti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
+    /*
+      TEST CASES:
+      1) Page loads -> 'Te hice esto con mucho amor ❤️' fades in. 
+         The code attempts to play music after 1 second. 
+         If blocked, user must click the page/carta to allow music.
+      2) User clicks on the envelope -> Tapa rotates, papel slides up, 
+         typewriter effect fully displays 'Eres lo mejor que me ha pasado. Te amo ❤️'.
+      3) Confetti is launched once the carta is opened.
+      4) The entire text is displayed (no truncation).
+    */
+  </script>
 </body>
 </html>
