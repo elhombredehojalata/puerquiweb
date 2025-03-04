@@ -75,3 +75,53 @@
         .carta-container.abierta .papel {
             transform: translateY(0);
             opacity: 1;
+        }
+        .texto-escribiendo {
+            overflow: hidden;
+            border-right: 3px solid black;
+            white-space: nowrap;
+            animation: escribir 3s steps(40) forwards;
+        }
+        @keyframes escribir {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Te hice esto con mucho amor ❤️</h1>
+    <div class="carta-container" onclick="abrirCarta()">
+        <div class="sobre"></div>
+        <div class="tapa"></div>
+        <div class="papel">
+            <p class="texto-escribiendo">Eres lo mejor que me ha pasado. Te amo ❤️</p>
+        </div>
+    </div>
+    <audio id="musica" src="brillas.mp3" loop></audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let audio = document.getElementById('musica');
+            setTimeout(() => {
+                audio.play().catch(error => console.log("Autoplay bloqueado, usuario debe interactuar primero."));
+            }, 1000);
+        });
+
+        function abrirCarta() {
+            let carta = document.querySelector('.carta-container');
+            carta.classList.add('abierta');
+            let audio = document.getElementById('musica');
+            audio.play();
+            lanzarConfeti();
+        }
+
+        function lanzarConfeti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    </script>
+</body>
+</html>
