@@ -353,9 +353,9 @@
     let userScrolled = false; // Flag para detectar desplazamiento manual
     let cartaAbierta = false; // Para saber si la carta ya fue abierta
 
-    // Listener para detectar scroll manual en el contenedor de la carta
     document.addEventListener('DOMContentLoaded', function() {
       const papel = document.querySelector('.papel');
+      // Detecta scroll manual en la carta
       papel.addEventListener('scroll', function() {
         userScrolled = true;
       });
@@ -366,10 +366,10 @@
       }, 1000);
     });
 
-    // Función para abrir la carta (se ejecuta solo una vez)
+    // Abre la carta (solo la primera vez)
     window.abrirCarta = function abrirCarta() {
       let carta = document.querySelector('.carta-container');
-      if (carta.classList.contains('abierta')) return; // Evita reabrir
+      if (carta.classList.contains('abierta')) return;
       carta.classList.add('abierta');
       cartaAbierta = true;
 
@@ -385,6 +385,7 @@
       }
     };
 
+    // Confetti
     function lanzarConfeti() {
       confetti({
         particleCount: 100,
@@ -393,35 +394,41 @@
       });
     }
 
-    // Efecto de máquina de escribir (más lento) con auto-scroll, que se detiene si el usuario desplaza manualmente.
+    // Efecto de máquina de escribir con auto-scroll condicional
     function typeWriter(element, text, i = 0) {
       const typingSpeed = 80;
       if (i < text.length) {
         element.textContent += text.charAt(i);
-        // Solo auto-scroll si el usuario no ha scrolleado manualmente y está cerca del fondo
+        // Auto-scroll si no ha habido scroll manual y si está cerca del final
         if (!userScrolled && isNearBottom(element.parentElement)) {
           element.parentElement.scrollTop = element.parentElement.scrollHeight;
         }
         i++;
         setTimeout(() => typeWriter(element, text, i), typingSpeed);
       } else {
-        // Al finalizar, se reemplaza el último "Te amo." por una versión parpadeante, se añade la aclaración,
-        // y en una línea aparte se agrega "Postada: Haz click en el 'Te amo'".
+        // Final de la animación: reemplaza "Te amo." con parpadeo y aclaración
         let content = element.textContent;
-        element.innerHTML = content.replace(/Te amo\.$/, 
-          '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span><span class="clarification">(haz click en \'Te amo\')</span><br><em>Postada: Haz click en el \"Te amo\"</em>');
+        element.innerHTML = content.replace(
+          /Te amo\.$/,
+          '<span class="blinking" onclick="lanzarConfeti()">Te amo.</span>' +
+          '<span class="clarification">(haz click en \'Te amo\')</span>' +
+          '<br><em>Postada: Haz click en el \"Te amo\"</em>'
+        );
+        // Al terminar, forzamos scrollTop = 0 y marcamos userScrolled = true
+        // para que puedas leer desde el inicio sin volver abajo.
+        element.parentElement.scrollTop = 0;
+        userScrolled = true;
       }
     }
 
-    // Función para verificar si el usuario está cerca del fondo del contenedor
+    // Verifica si el usuario está cerca del fondo
     function isNearBottom(container) {
-      const threshold = 10; 
+      const threshold = 10;
       return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
     }
 
-    // Función para abrir la galería
+    // Abre la galería
     function openGallery() {
-      // Verificar si la carta ya fue leída (abierta)
       if (!cartaAbierta) {
         alert("Tranquila, puerquita, primero lee la carta y después ves esto 🤣❤️");
         return;
@@ -431,24 +438,23 @@
       startGallery();
     }
 
-    // Variables para la galería
+    // Variables galería
     let currentImage = 1;
-    const totalImages = 24; // 24 imágenes
+    const totalImages = 24;
 
-    // Inicia la galería: muestra cada imagen en el área principal y luego la minimiza a miniatura.
+    // Inicia la galería
     function startGallery() {
       if (currentImage > totalImages) return;
       const galleryMain = document.getElementById('gallery-main');
-      galleryMain.innerHTML = ''; // Limpia el área principal
+      galleryMain.innerHTML = '';
       let img = document.createElement('img');
       img.src = currentImage + ".jpg";
       img.style.width = "100%";
       img.style.maxWidth = "320px";
       img.style.height = "auto";
       galleryMain.appendChild(img);
-      // Después de 3 segundos, se minimiza la imagen y se mueve a la franja de miniaturas.
       setTimeout(() => {
-        img.style.width = "80px"; // Se reduce a tamaño de miniatura
+        img.style.width = "80px";
         img.style.opacity = "0.8";
         setTimeout(() => {
           const galleryThumbs = document.getElementById('gallery-thumbs');
@@ -459,20 +465,20 @@
       }, 3000);
     }
 
-    // Función para abrir el texto "Te cuento que..."
+    // Abre la cajita “Te cuento que…”
     function openInfo() {
       const infoContainer = document.getElementById('info-container');
-      // Si ya está abierto, no lo abras de nuevo
       if (infoContainer.style.display === 'block') return;
       infoContainer.style.display = 'block';
     }
 
-    // Copiar enlace al portapapeles y mostrar mensaje
+    // Copia el enlace y muestra el mensaje
     function copyLink(event) {
-      event.stopPropagation(); // Evita que se cierre la caja por error
+      event.stopPropagation();
       navigator.clipboard.writeText('https://elhombredehojalata.github.io/puerquiweb')
         .then(() => {
-          document.getElementById('info-message').textContent = 'gracias por guardar nuestros puerquirecuerdos, te amo 🐷❤️';
+          document.getElementById('info-message').textContent =
+            'gracias por guardar nuestros puerquirecuerdos, te amo 🐷❤️';
         })
         .catch(err => console.log('Error al copiar enlace:', err));
     }
