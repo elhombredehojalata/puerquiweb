@@ -17,43 +17,50 @@
             height: 100vh;
         }
 
-        .carta {
+        .sobre {
             position: relative;
-            background: white;
-            padding: 20px;
-            width: 300px;
-            height: 200px;
+            width: 250px;
+            height: 150px;
+            background: #ff4d6d;
             border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 1s ease-in-out;
+        }
+
+        .tapa {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background: #d63384;
+            top: 0;
+            left: 0;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            transform-origin: top;
+            transition: transform 1s ease-in-out;
+        }
+
+        .mensaje {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
             font-size: 18px;
             font-weight: bold;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-        }
-
-        .carta.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .boton {
-            background-color: #ff4d6d;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
+            padding: 20px;
         }
 
-        .boton:hover {
-            background-color: #d63384;
+        .sobre.abierto .tapa {
+            transform: rotateX(180deg);
+        }
+
+        .sobre.abierto .mensaje {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -61,17 +68,16 @@
 
     <h1>Te hice esto con mucho amor ❤️</h1>
     
-    <div class="carta" id="carta">
-        Querida, eres lo mejor que me ha pasado. 💕
+    <div class="sobre" onclick="abrirCarta()">
+        <div class="tapa"></div>
+        <div class="mensaje">Querida, eres lo mejor que me ha pasado. 💕</div>
     </div>
 
-    <button class="boton" onclick="mostrarCarta()">Abrir carta</button>
-
-    <audio id="musica" src="tu-cancion.mp3"></audio>
+    <audio id="musica" src="brillas.mp3"></audio>
 
     <script>
-        function mostrarCarta() {
-            document.getElementById("carta").classList.add("visible");
+        function abrirCarta() {
+            document.querySelector(".sobre").classList.add("abierto");
 
             var audio = document.getElementById("musica");
             if (audio.paused) {
