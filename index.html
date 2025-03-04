@@ -7,12 +7,11 @@
 
   <!-- FontAwesome for icons (heart icon) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
   <!-- Confetti library (canvas-confetti) -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* Page styling with repeated background image */
+    /* Fondo con imagen en mosaico y overlay para oscurecer */
     body {
       margin: 0;
       padding: 0;
@@ -23,45 +22,61 @@
       height: 100vh;
       font-family: Arial, sans-serif;
       text-align: center;
-      
-      /* Mosaic background with cerdito.jpg */
-      background-image: url('cerdito.jpg');
+      background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                  url('cerdito.jpg');
       background-repeat: repeat;
-      background-size: 150px 150px; /* Adjust tile size if needed */
+      background-size: 150px 150px;
     }
 
-    /* Fade-in animation for heading */
+    /* Encabezado posicionado más arriba con animación */
     h1 {
+      position: relative;
+      z-index: 10;
       font-size: 2rem;
-      margin-bottom: 20px;
+      margin: 10px 0 30px 0;
       opacity: 0;
-      animation: fadeIn 2s forwards;
+      animation: fadeIn 2s forwards, pulse 2s infinite;
     }
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    /* Animación para el corazón */
+    .heart {
+      display: inline-block;
+      animation: bounce 1s infinite;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
     }
 
-    /* Carta container with 3D perspective */
+    /* Carta container con perspectiva 3D */
     .carta-container {
       position: relative;
-      width: 320px; 
+      width: 320px;
       height: 200px;
       cursor: pointer;
-      perspective: 1000px; /* 3D effect */
+      perspective: 1000px;
     }
 
-    /* Sobre (envelope) styling */
+    /* Sobre (cuerpo del sobre) */
     .sobre {
       position: absolute;
       width: 100%;
       height: 100%;
-      background-color: #fdf1e3; /* envelope-like color */
+      background-color: #fdf1e3;
       border-radius: 10px;
       transition: transform 1s;
     }
 
-    /* Tapa (top flap) with heart text “Ábreme” */
+    /* Tapa (solapa) del sobre con texto “Ábreme” */
     .tapa {
       position: absolute;
       width: 100%;
@@ -85,7 +100,7 @@
       gap: 0.3rem;
     }
 
-    /* Papel (letter) inside */
+    /* Papel (contenido de la carta) */
     .papel {
       position: absolute;
       width: 90%;
@@ -101,10 +116,9 @@
       align-items: center;
       justify-content: center;
       opacity: 0;
-      overflow-y: auto; /* If text is too long, scroll inside */
+      overflow-y: auto;
     }
-
-    /* When the card is opened, the flap rotates and the paper slides up */
+    /* Al abrir la carta */
     .carta-container.abierta .tapa {
       transform: rotateX(180deg);
     }
@@ -113,42 +127,39 @@
       opacity: 1;
     }
 
-    /* We'll place the typewriter text in an empty <p> that we fill with JS */
+    /* Área para el texto con efecto máquina de escribir (se rellenará vía JS) */
     #typewriter {
-      white-space: pre-wrap; /* So new lines are respected */
+      white-space: pre-wrap;
       margin: 0;
     }
   </style>
 </head>
 <body>
-  <h1>Te hice esto con mucho amor ❤️</h1>
+  <!-- Encabezado superior -->
+  <h1>Te hice esto con mucho amor <span class="heart">❤️</span></h1>
 
+  <!-- Contenedor de la carta -->
   <div class="carta-container" onclick="abrirCarta()">
-    <!-- Envelope body -->
     <div class="sobre"></div>
-    <!-- Envelope flap with text “Ábreme” and heart icon -->
     <div class="tapa">
       <p>
         <span>Ábreme</span>
         <i class="fa fa-heart"></i>
       </p>
     </div>
-    <!-- The paper inside the envelope -->
     <div class="papel">
-      <!-- We'll type the text into this paragraph via JavaScript -->
       <p id="typewriter"></p>
     </div>
   </div>
   
-  <!-- Audio for background music -->
+  <!-- Audio de fondo -->
   <audio id="musica" src="brillas.mp3" loop></audio>
   
   <script>
-    // If you want to change the text or add more lines, edit 'fullText' below.
-    // Use '\\n' for new lines or store your text in a variable.
+    // Texto completo a mostrar (puedes modificarlo por uno más largo)
     const fullText = `Eres lo mejor que me ha pasado.\nTe amo ❤️\nAquí puedes escribir un texto más largo y no se truncará.`;
 
-    // Attempt to play music after page load
+    // Se intenta reproducir la música después de cargar la página
     document.addEventListener('DOMContentLoaded', function() {
       let audio = document.getElementById('musica');
       setTimeout(() => {
@@ -156,24 +167,24 @@
       }, 1000);
     });
 
-    // Attach abrirCarta to window so onclick can find it
+    // La función se ejecuta solo una vez al hacer click (si la carta no está ya abierta)
     window.abrirCarta = function abrirCarta() {
       let carta = document.querySelector('.carta-container');
+      if (carta.classList.contains('abierta')) return; // Evita regenerar el texto
       carta.classList.add('abierta');
 
       let audio = document.getElementById('musica');
       audio.play().catch(err => console.log('Audio blocked:', err));
 
-      // Launch confetti
       lanzarConfeti();
 
-      // Start the typewriter effect once the paper is visible
+      // Inicia el efecto de máquina de escribir una sola vez
       setTimeout(() => {
         typeWriter(document.getElementById('typewriter'), fullText);
-      }, 500); 
+      }, 500);
     };
 
-    // Simple confetti using canvas-confetti
+    // Confetti con canvas-confetti
     function lanzarConfeti() {
       confetti({
         particleCount: 100,
@@ -182,12 +193,9 @@
       });
     }
 
-    /*
-      Typewriter effect in JS for multiline text.
-      If your text is super long, you can adjust 'typingSpeed'.
-    */
+    // Efecto máquina de escribir para texto multilínea
     function typeWriter(element, text, i = 0) {
-      const typingSpeed = 40; // ms per character
+      const typingSpeed = 40; // velocidad en ms por caracter
       if (i < text.length) {
         element.textContent += text.charAt(i);
         i++;
@@ -195,18 +203,12 @@
       }
     }
 
-    /*
-      TEST CASES:
-      1) Page loads -> 'Te hice esto con mucho amor ❤️' fades in. 
-         The code attempts to play music after 1 second. 
-         If blocked, user must click the page/carta to allow music.
-      2) User clicks on the envelope -> Tapa rotates, papel slides up, 
-         the typewriter effect types out the entire 'fullText' (including new lines).
-      3) Confetti is launched once the carta is opened.
-      4) The entire text is displayed across multiple lines (no truncation).
-      5) If user changes 'fullText' to an even longer text, it should still type out fully.
-      6) The background is a repeated mosaic of 'cerdito.jpg' sized at 150px x 150px.
-      7) Clicking the envelope calls 'abrirCarta()' without errors.
+    /* TEST CASES:
+       1) Al cargar la página, se muestra el encabezado animado en la parte superior.
+       2) El fondo muestra la imagen "cerdito.jpg" en mosaico con overlay oscuro.
+       3) Al hacer click en la carta (solo la primera vez), la solapa rota, el papel se desliza y aparece el texto completo con efecto de máquina de escribir.
+       4) Se lanza confetti al abrir la carta.
+       5) Si se hace click nuevamente, no se vuelve a generar el texto.
     */
   </script>
 </body>
