@@ -45,8 +45,8 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
     .heart {
@@ -64,7 +64,6 @@
       width: 320px;
       margin-top: 20px;
       cursor: pointer;
-      /* perspective para un flip sencillo */
       perspective: 1000px; 
     }
 
@@ -89,6 +88,7 @@
       align-items: center;
       justify-content: center;
     }
+    /* El texto 'Ábreme' parpadea */
     .tapa p {
       color: #fff;
       font-weight: bold;
@@ -97,6 +97,12 @@
       display: flex;
       align-items: center;
       gap: 0.3rem;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.4; }
+      100% { opacity: 1; }
     }
 
     /* Papel (oculto hasta abrir) */
@@ -243,6 +249,7 @@
       color: #333;
       margin-bottom: 10px;
     }
+    /* Botón en mayúsculas */
     #info-button {
       background-color: #ff4d6d;
       color: #fff;
@@ -251,6 +258,7 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 1rem;
+      text-transform: uppercase; /* Para mayúsculas */
     }
     #info-button:hover {
       background-color: #ff2f51;
@@ -275,12 +283,12 @@
 
   <!-- Contenedor de la Carta -->
   <div class="carta-container" onclick="abrirCarta()">
-    <!-- SOBRE completo (con la tapa arriba) -->
     <div class="sobre">
+      <!-- Tapa parpadeante -->
       <div class="tapa">
         <p>Ábreme <i class="fa fa-heart"></i></p>
       </div>
-      <!-- El papel estará dentro, pero oculto inicialmente -->
+      <!-- Papel oculto hasta abrir la carta -->
       <div class="papel">
         <p id="typewriter"></p>
       </div>
@@ -308,9 +316,9 @@
   </div>
   <div id="info-container">
     <div id="info-text">
-      si decides conservar el link de esta página, este recuerdo será guardado por siempre y lo podrás ver cuando quieras, así recordarás cuánto te amo con solo un click
+      Si decides conservar el link de esta página, este recuerdo será guardado por siempre y lo podrás ver cuando quieras, así recordarás cuánto te amo con solo un click. 🖥️
     </div>
-    <button id="info-button" onclick="copyLink(event)">guardar enlace</button>
+    <button id="info-button" onclick="copyLink(event)">GUARDAR ENLACE</button>
     <div id="info-message"></div>
   </div>
 
@@ -334,9 +342,9 @@
       if (cartaAbierta) return; // Solo abrir una vez
       cartaAbierta = true;
 
-      // Flip tapa
+      // Aplica clase 'abierta' para voltear la tapa
       const container = document.querySelector('.carta-container');
-      container.classList.add('abierta'); // Para CSS .abierta
+      container.classList.add('abierta');
 
       // Inicia confeti
       lanzarConfeti();
@@ -354,7 +362,7 @@
       }, 500);
     }
 
-    // Confeti
+    // Efecto confeti
     function lanzarConfeti() {
       confetti({
         particleCount: 100,
@@ -363,7 +371,7 @@
       });
     }
 
-    // Máquina de escribir sin scroll interno
+    // Máquina de escribir
     function typeWriter(element, text, i = 0) {
       const typingSpeed = 80;
       if (i < text.length) {
@@ -382,7 +390,7 @@
       }
     }
 
-    // Abre la galería (verifica si carta está abierta)
+    // Abre la galería
     let currentImage = 1;
     const totalImages = 24;
     function openGallery() {
@@ -414,6 +422,10 @@
 
     // Abre cajita "Te cuento que..."
     function openInfo() {
+      if (!cartaAbierta) {
+        alert('Tranquila, puerquita, primero lee la carta y después ves esto 🤣❤️');
+        return;
+      }
       const infoContainer = document.getElementById('info-container');
       if (infoContainer.style.display === 'block') return;
       infoContainer.style.display = 'block';
@@ -425,7 +437,7 @@
       navigator.clipboard.writeText('https://elhombredehojalata.github.io/puerquiweb')
         .then(() => {
           document.getElementById('info-message').textContent =
-            'gracias por guardar nuestros puerquirecuerdos, te amo 🐷❤️';
+            'Gracias por guardar nuestros puerquirecuerdos, te amo 🐷❤️';
         })
         .catch(err => console.log('Error al copiar enlace:', err));
     }
