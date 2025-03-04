@@ -76,20 +76,21 @@
     <audio id="musica" src="brillas.mp3"></audio>
 
     <script>
+        let musica = document.getElementById("musica");
+
         function abrirCarta() {
             document.querySelector(".sobre").classList.add("abierto");
 
-            var audio = document.getElementById("musica");
-            if (audio.paused) {
-                audio.play().catch(error => console.log("Autoplay bloqueado: ", error));
+            // Intentar reproducir la música cuando se abre la carta
+            if (musica.paused) {
+                musica.play().catch(error => console.log("Autoplay bloqueado: ", error));
             }
         }
 
-        // Reproducir música al primer clic en cualquier parte de la página
-        window.addEventListener("click", function() {
-            var audio = document.getElementById("musica");
-            if (audio.paused) {
-                audio.play().catch(error => console.log("Autoplay bloqueado: ", error));
+        // Permitir la reproducción automática después del primer clic
+        document.addEventListener("click", function() {
+            if (musica.paused) {
+                musica.play().catch(error => console.log("Autoplay bloqueado: ", error));
             }
         }, { once: true });
     </script>
