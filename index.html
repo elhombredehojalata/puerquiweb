@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Carta para Ti</title>
 
-  <!-- FontAwesome for icons (heart icon) -->
+  <!-- FontAwesome para iconos (corazón) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <!-- Confetti library (canvas-confetti) -->
+  <!-- Librería Confetti (canvas-confetti) -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* Fondo con imagen en mosaico y overlay para oscurecer */
+    /* Fondo con imagen mosaico + overlay semitransparente */
     body {
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start; /* para que inicie arriba */
+      min-height: 100vh; /* altura completa de la ventana */
       font-family: Arial, sans-serif;
       text-align: center;
-      background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-                  url('cerdito.jpg');
+
+      /* Imagen de fondo en mosaico con overlay para oscurecer un poco */
+      background: 
+        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+        url('cerdito.jpg');
       background-repeat: repeat;
       background-size: 150px 150px;
     }
 
-    /* Encabezado fijo para que siempre se vea */
+    /* Encabezado: centrado, arriba, animación para resaltar */
     h1 {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
+      position: relative; 
+      margin: 20px 0 0 0; 
       font-size: 2rem;
-      margin: 0;
+      color: #fff;
+      /* Animaciones */
       opacity: 0;
       animation: fadeIn 2s forwards, pulse 2s infinite;
     }
@@ -45,29 +46,29 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.1); }
       100% { transform: scale(1); }
     }
-    /* Animación para el corazón */
+    /* Corazón con rebote */
     .heart {
       display: inline-block;
       animation: bounce 1s infinite;
     }
     @keyframes bounce {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-10px); }
       100% { transform: translateY(0); }
     }
 
-    /* Carta container con margen superior para dejar espacio al encabezado */
+    /* Contenedor de la carta (sobre), con margen-top para separarla del h1 */
     .carta-container {
       position: relative;
       width: 320px;
       height: 200px;
+      margin-top: 100px; /* Aumenta si aún choca con el h1 */
       cursor: pointer;
       perspective: 1000px;
-      margin-top: 80px; /* Para no solaparse con el encabezado fijo */
     }
 
     /* Sobre (cuerpo del sobre) */
@@ -80,7 +81,7 @@
       transition: transform 1s;
     }
 
-    /* Tapa (solapa) del sobre con texto “Ábreme” */
+    /* Tapa del sobre con texto “Ábreme” */
     .tapa {
       position: absolute;
       width: 100%;
@@ -120,9 +121,9 @@
       align-items: center;
       justify-content: center;
       opacity: 0;
-      overflow-y: auto;
+      overflow-y: auto; /* Si el texto es muy largo */
     }
-    /* Cuando se abre la carta */
+    /* Al abrir la carta */
     .carta-container.abierta .tapa {
       transform: rotateX(180deg);
     }
@@ -131,28 +132,35 @@
       opacity: 1;
     }
 
-    /* Área para el texto con efecto máquina de escribir */
+    /* Texto con efecto máquina de escribir */
     #typewriter {
-      white-space: pre-wrap;
+      white-space: pre-wrap; /* Respeta saltos de línea */
       margin: 0;
     }
 
-    /* Firma con estilo bonito */
+    /* Firma */
     #signature {
       margin-top: 20px;
       font-size: 1.5rem;
       font-family: 'Brush Script MT', cursive;
       color: #ff4d6d;
+      /* Para que resalte del fondo */
+      text-shadow: 2px 2px 4px #000; 
       opacity: 0;
-      animation: fadeIn 2s forwards 2s;
+      animation: fadeSignature 2s forwards 2s;
+    }
+    @keyframes fadeSignature {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <!-- Encabezado fijo -->
+
+  <!-- Título animado arriba -->
   <h1>Te hice esto con mucho amor <span class="heart">❤️</span></h1>
 
-  <!-- Contenedor de la carta -->
+  <!-- Carta -->
   <div class="carta-container" onclick="abrirCarta()">
     <div class="sobre"></div>
     <div class="tapa">
@@ -166,16 +174,18 @@
     </div>
   </div>
 
-  <!-- Firma debajo de la carta -->
+  <!-- Firma con sombra para destacar -->
   <div id="signature">firma: tuhombrede_hojalata</div>
 
-  <!-- Audio de fondo -->
+  <!-- Música de fondo -->
   <audio id="musica" src="brillas.mp3" loop></audio>
-  
+
   <script>
+    // Texto completo
     const fullText = `Eres lo mejor que me ha pasado.\nTe amo ❤️\nAquí puedes escribir un texto más largo y no se truncará.`;
     let typewriterStarted = false;
 
+    // Reproducir música tras cargar
     document.addEventListener('DOMContentLoaded', function() {
       let audio = document.getElementById('musica');
       setTimeout(() => {
@@ -183,16 +193,18 @@
       }, 1000);
     });
 
+    // Función para abrir la carta
     window.abrirCarta = function abrirCarta() {
       let carta = document.querySelector('.carta-container');
-      if (carta.classList.contains('abierta')) return; // Evitar regenerar el texto
-      carta.classList.add('abierta');
+      if (carta.classList.contains('abierta')) return; // Evita reabrir
 
+      carta.classList.add('abierta');
       let audio = document.getElementById('musica');
       audio.play().catch(err => console.log('Audio blocked:', err));
 
       lanzarConfeti();
 
+      // Inicia la animación de máquina de escribir solo una vez
       if (!typewriterStarted) {
         setTimeout(() => {
           typeWriter(document.getElementById('typewriter'), fullText);
@@ -201,6 +213,7 @@
       }
     };
 
+    // Confetti
     function lanzarConfeti() {
       confetti({
         particleCount: 100,
@@ -209,6 +222,7 @@
       });
     }
 
+    // Efecto de máquina de escribir
     function typeWriter(element, text, i = 0) {
       const typingSpeed = 40;
       if (i < text.length) {
