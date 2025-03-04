@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Ti ❤️</title>
+    <title>Carta para Ti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.2"></script>
     <style>
         body {
             display: flex;
@@ -14,86 +16,62 @@
             background-color: #ffe6e6;
             font-family: Arial, sans-serif;
             text-align: center;
-            overflow: hidden;
         }
         h1 {
-            font-size: 2em;
+            font-size: 2rem;
+            margin-bottom: 20px;
             opacity: 0;
-            transform: translateY(-20px);
             animation: fadeIn 2s forwards;
         }
-        .card-container {
-            position: relative;
-            width: 250px;
-            height: 200px;
-            perspective: 1000px;
-            margin-top: 20px;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .card {
+        .carta-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+        .sobre {
+            position: absolute;
             width: 100%;
             height: 100%;
-            position: absolute;
-            transform-style: preserve-3d;
+            background-color: #ff4d6d;
+            border-radius: 10px;
             transition: transform 1s;
         }
-        .card.open {
-            transform: rotateX(180deg);
-        }
-        .front, .back {
+        .tapa {
             position: absolute;
             width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: 50%;
+            background-color: #d43f5e;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            transform-origin: top;
+            transition: transform 1s;
         }
-        .front {
-            background-color: #ff4d6d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-        }
-        .back {
+        .papel {
+            position: absolute;
+            width: 90%;
+            height: 80%;
             background-color: white;
-            transform: rotateX(180deg);
+            border-radius: 5px;
+            top: 10%;
+            left: 5%;
+            padding: 10px;
+            transform: translateY(100%);
+            transition: transform 1s 0.5s, opacity 1s 0.5s;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            font-size: 1.2rem;
+            opacity: 0;
         }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .carta-container.abierta .tapa {
+            transform: rotateX(180deg);
         }
-    </style>
-</head>
-<body>
-    <h1>Te hice esto con mucho amor ❤️</h1>
-    <div class="card-container">
-        <div class="card" id="card">
-            <div class="front" onclick="abrirCarta()">Haz clic aquí</div>
-            <div class="back">Eres lo mejor que me ha pasado ❤️</div>
-        </div>
-    </div>
-    <audio id="music" autoplay loop>
-        <source src="brillas.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-    </audio>
-    <script>
-        function abrirCarta() {
-            document.getElementById("card").classList.toggle("open");
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            let audio = document.getElementById("music");
-            audio.play().catch(error => console.log("Autoplay bloqueado por el navegador"));
-        });
-    </script>
-</body>
-</html>
+        .carta-container.abierta .papel {
+            transform: translateY(0);
+            opacity: 1;
