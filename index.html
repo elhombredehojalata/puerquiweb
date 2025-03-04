@@ -3,52 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti 💖</title>
-    <style>
-        body {
-            background-color: #ffdde1;
-            text-align: center;
-            font-family: Arial, sans-serif;
-            padding: 50px;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-            display: inline-block;
-        }
-        #mensaje {
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
+    <title>Para mi novia 💖</title>
 </head>
 <body>
 
-    <h1>💖 Una sorpresa para ti 💖</h1>
+    <h1>Te hice esto con mucho amor 💕</h1>
 
-    <div class="card">
-        <p>Haz clic en cualquier parte para ver tu mensaje.</p>
-    </div>
+    <!-- Botón de reproducción por si el navegador bloquea el autoplay -->
+    <button onclick="document.getElementById('miAudio').play()">▶ Reproducir música</button>
 
-    <div id="mensaje" class="card">
-        <h2>Te quiero mucho 😘</h2>
-        <p>Eres lo mejor que me ha pasado, y quería hacerte algo especial.</p>
-        <img src="imagen-romantica.jpg" alt="Te quiero" width="200">
-    </div>
-
-    <audio id="musica" src="brillas.mp3"></audio>
-
-    <script>
-        document.body.addEventListener("click", function() {
-            document.getElementById("mensaje").style.display = "block";
-            var audio = document.getElementById("musica");
-            audio.play(); // Reproduce la música al hacer clic
-        });
-    </script>
+    <!-- Audio con autoplay y loop -->
+    <audio id="miAudio" autoplay loop>
+        <source src="brillas.mp3" type="audio/mpeg">
+        Tu navegador no soporta audio.
+    </audio>
 
 </body>
-</html>
-
 </html>
