@@ -24,10 +24,10 @@
       font-family: Arial, sans-serif;
       text-align: center;
       
-      /* Mosaic background with cerdo.jpg */
-      background-image: url('cerdo.jpg');
+      /* Mosaic background with cerdito.jpg */
+      background-image: url('cerdito.jpg');
       background-repeat: repeat;
-      background-size: 150px 150px; /* Adjust to taste */
+      background-size: 150px 150px; /* Adjust tile size if needed */
     }
 
     /* Fade-in animation for heading */
@@ -144,13 +144,9 @@
   <audio id="musica" src="brillas.mp3" loop></audio>
   
   <script>
-    /*
-      If you want to change the text or add more lines, edit 'fullText' below.
-      Use '\\n' for new lines or store your text in a variable, e.g. from a server.
-    */
-    const fullText = `Eres lo mejor que me ha pasado. 
-Te amo ❤️ 
-Aquí puedes escribir un texto más largo y no se truncará.`;
+    // If you want to change the text or add more lines, edit 'fullText' below.
+    // Use '\\n' for new lines or store your text in a variable.
+    const fullText = `Eres lo mejor que me ha pasado.\nTe amo ❤️\nAquí puedes escribir un texto más largo y no se truncará.`;
 
     // Attempt to play music after page load
     document.addEventListener('DOMContentLoaded', function() {
@@ -160,8 +156,8 @@ Aquí puedes escribir un texto más largo y no se truncará.`;
       }, 1000);
     });
 
-    // On click, open the card and play music
-    function abrirCarta() {
+    // Attach abrirCarta to window so onclick can find it
+    window.abrirCarta = function abrirCarta() {
       let carta = document.querySelector('.carta-container');
       carta.classList.add('abierta');
 
@@ -175,7 +171,7 @@ Aquí puedes escribir un texto más largo y no se truncará.`;
       setTimeout(() => {
         typeWriter(document.getElementById('typewriter'), fullText);
       }, 500); 
-    }
+    };
 
     // Simple confetti using canvas-confetti
     function lanzarConfeti() {
@@ -201,4 +197,17 @@ Aquí puedes escribir un texto más largo y no se truncará.`;
 
     /*
       TEST CASES:
-      1) Page loads -> 'Te hice esto con mucho amo
+      1) Page loads -> 'Te hice esto con mucho amor ❤️' fades in. 
+         The code attempts to play music after 1 second. 
+         If blocked, user must click the page/carta to allow music.
+      2) User clicks on the envelope -> Tapa rotates, papel slides up, 
+         the typewriter effect types out the entire 'fullText' (including new lines).
+      3) Confetti is launched once the carta is opened.
+      4) The entire text is displayed across multiple lines (no truncation).
+      5) If user changes 'fullText' to an even longer text, it should still type out fully.
+      6) The background is a repeated mosaic of 'cerdito.jpg' sized at 150px x 150px.
+      7) Clicking the envelope calls 'abrirCarta()' without errors.
+    */
+  </script>
+</body>
+</html>
